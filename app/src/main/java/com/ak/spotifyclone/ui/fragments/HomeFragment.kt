@@ -27,8 +27,6 @@ class HomeFragment : Fragment() {
     @Inject
     lateinit var songadapter: SongAdapter
 
-
-
     private lateinit var binding: FragmentHomeBinding
 
     override fun onCreateView(
@@ -49,6 +47,7 @@ class HomeFragment : Fragment() {
         songadapter.setOnItemClickListener {
            viewModel.playOrToggleSong(it)
         }
+
     }
 
     private fun setupRecyclerView() = binding.rvAllSongs.apply {

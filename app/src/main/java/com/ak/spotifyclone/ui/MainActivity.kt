@@ -4,6 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.ak.spotifyclone.R
 import com.ak.spotifyclone.adapters.SwipeSongAdapter
@@ -17,6 +24,7 @@ import com.ak.spotifyclone.util.Status.ERROR
 import com.bumptech.glide.RequestManager
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -36,20 +44,24 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         subscribeToObservers()
 
+
+
         binding.vpSong.adapter = swipeSongAdapter
 
-        binding.vpSong.registerOnPageChangeCallback(object:ViewPager2.OnPageChangeCallback(){
+        binding.vpSong.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                if (playbackState?.isPlaying == true){
+                if (playbackState?.isPlaying == true) {
                     viewModel.playOrToggleSong(swipeSongAdapter.songs[position])
-                }else{
+                } else {
                     currentPlayingSong = swipeSongAdapter.songs[position]
                 }
             }
@@ -57,9 +69,36 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
 
         binding.ivPlayPause.setOnClickListener {
             currentPlayingSong?.let {
-                viewModel.playOrToggleSong(it,true)
+                viewModel.playOrToggleSong(it, true)
             }
         }
+
+
+        swipeSongAdapter.setItemClickListener {
+            navHostFragment.findNavController().navigate(R.id.globalActionToSongFragment)
+        }
+
+
+            navHostFragment.findNavController().addOnDestinationChangedListener { _, destination, _ ->
+                when (destination.id) {
+                    R.id.songFragment -> hideBottomBar()
+                    R.id.homeFragment -> showBottomBar()
+                    else -> showBottomBar()
+                }
+            }
+
+    }
+
+    private fun hideBottomBar() {
+        binding.vpSong.isVisible = false
+        binding.ivCurSongImage.isVisible = false
+        binding.ivPlayPause.isVisible = false
+    }
+
+    private fun showBottomBar() {
+        binding.vpSong.isVisible = true
+        binding.ivCurSongImage.isVisible = true
+        binding.ivPlayPause.isVisible = true
     }
 
     private fun switchViewPagerToCurentSong(song: Song) {

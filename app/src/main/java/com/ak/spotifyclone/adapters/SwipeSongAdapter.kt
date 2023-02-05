@@ -42,19 +42,20 @@ class SwipeSongAdapter: RecyclerView.Adapter<SwipeSongAdapter.SwipeSongViewHolde
     }
 
     override fun onBindViewHolder(holder: SwipeSongViewHolder, position: Int) {
+        val song = songs[position]
         holder.binding.song = songs[position]
         holder.itemView.setOnClickListener {
             onItemClickListener?.let {click ->
-                click(songs[position])
+                click(song)
 
             }
         }
 
     }
 
-    private var onItemClickListener: ((Song) -> Unit)? = null
+     var onItemClickListener: ((Song) -> Unit)? = null
 
-    fun setOnItemClickListener(listener: (Song) -> Unit) {
+    fun setItemClickListener(listener: (Song) -> Unit) {
         onItemClickListener = listener
     }
 }
