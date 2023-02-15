@@ -8,7 +8,7 @@ import com.ak.spotifyclone.R
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
-fun ImageView.downloadFromUrl(url: String?, progressDrawable: CircularProgressDrawable){
+fun ImageView.downloadFromUrl(url: String?, progressDrawable: CircularProgressDrawable) {
 
     val options = RequestOptions()
         .placeholder(progressDrawable)
@@ -21,7 +21,7 @@ fun ImageView.downloadFromUrl(url: String?, progressDrawable: CircularProgressDr
 
 }
 
-fun placeholderProgressBar(context: Context) : CircularProgressDrawable {
+fun placeholderProgressBar(context: Context): CircularProgressDrawable {
     return CircularProgressDrawable(context).apply {
         strokeWidth = 8f
         centerRadius = 40f
@@ -30,6 +30,6 @@ fun placeholderProgressBar(context: Context) : CircularProgressDrawable {
 }
 
 @BindingAdapter("android:downloadUrl")
-fun downloadImage(view: ImageView, url:String?) {
+fun downloadImage(view: ImageView, url: String?) {
     view.downloadFromUrl(url, placeholderProgressBar(view.context))
 }

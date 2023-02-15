@@ -45,7 +45,6 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -79,13 +78,13 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
         }
 
 
-            navHostFragment.findNavController().addOnDestinationChangedListener { _, destination, _ ->
-                when (destination.id) {
-                    R.id.songFragment -> hideBottomBar()
-                    R.id.homeFragment -> showBottomBar()
-                    else -> showBottomBar()
-                }
+        navHostFragment.findNavController().addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.songFragment -> hideBottomBar()
+                R.id.homeFragment -> showBottomBar()
+                else -> showBottomBar()
             }
+        }
 
     }
 

@@ -45,7 +45,7 @@ class HomeFragment : Fragment() {
         subscribeToObservers()
 
         songadapter.setOnItemClickListener {
-           viewModel.playOrToggleSong(it)
+            viewModel.playOrToggleSong(it)
         }
 
     }
@@ -56,10 +56,9 @@ class HomeFragment : Fragment() {
     }
 
 
-
     private fun subscribeToObservers() {
-        viewModel.mediaItems.observe(viewLifecycleOwner){result->
-            when(result.status){
+        viewModel.mediaItems.observe(viewLifecycleOwner) { result ->
+            when (result.status) {
                 Status.SUCCESS -> {
                     binding.allSongsProgressBar.isVisible = false
                     result.data?.let {

@@ -64,7 +64,7 @@ class MusicService : MediaBrowserServiceCompat() {
     override fun onCreate() {
         super.onCreate()
 
-        dataSourceFactory =  DefaultHttpDataSource.Factory()
+        dataSourceFactory = DefaultHttpDataSource.Factory()
 
         serviceScope.launch {
             firebaseMusicSource.fetchMediaData()
@@ -119,7 +119,7 @@ class MusicService : MediaBrowserServiceCompat() {
         itemToPlay: MediaMetadataCompat?,
         playNow: Boolean
     ) {
-        val curSongIndex = if(curPlayingSong == null) 0 else songs.indexOf(itemToPlay)
+        val curSongIndex = if (curPlayingSong == null) 0 else songs.indexOf(itemToPlay)
         exoPlayer.setMediaSource(firebaseMusicSource.asMediaSource(dataSourceFactory))
         exoPlayer.seekTo(curSongIndex, 0L)
         exoPlayer.playWhenReady = playNow
@@ -151,15 +151,19 @@ class MusicService : MediaBrowserServiceCompat() {
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
-        when(parentId) {
+        when (parentId) {
             MEDIA_ROOT_ID -> {
                 val resultsSent = firebaseMusicSource.whenReady { isInitialized ->
-                    if(isInitialized) {
+                    if (isInitialized) {
 
-                        if(!isPlayerInitialized && firebaseMusicSource.songs.isNotEmpty()) {
-                           serviceScope.launch {
-                               preparePlayer(firebaseMusicSource.songs,firebaseMusicSource.songs[0],false)
-                           }
+                        if (!isPlayerInitialized && firebaseMusicSource.songs.isNotEmpty()) {
+                            serviceScope.launch {
+                                preparePlayer(
+                                    firebaseMusicSource.songs,
+                                    firebaseMusicSource.songs[0],
+                                    false
+                                )
+                            }
                             isPlayerInitialized = true
                         }
                         result.sendResult(firebaseMusicSource.asMediaItems())
@@ -168,7 +172,7 @@ class MusicService : MediaBrowserServiceCompat() {
                         result.sendResult(null)
                     }
                 }
-                if(!resultsSent) {
+                if (!resultsSent) {
                     result.detach()
                 }
             }

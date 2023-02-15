@@ -23,7 +23,7 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _mediaItems = MutableLiveData<Resource<List<Song>>>()
-    val mediaItems : LiveData<Resource<List<Song>>> = _mediaItems
+    val mediaItems: LiveData<Resource<List<Song>>> = _mediaItems
 
     val isConnected = musicServiceConnection.isConnected
     val networkError = musicServiceConnection.networkError
@@ -31,60 +31,64 @@ class MainViewModel @Inject constructor(
     val playbackState = musicServiceConnection.playbackState
 
     init {
-         _mediaItems.postValue(Resource.loading(null))
-         musicServiceConnection.subscribe(MEDIA_ROOT_ID, object : MediaBrowserCompat.SubscriptionCallback(){
-             override fun onChildrenLoaded(
-                 parentId: String,
-                 children: MutableList<MediaBrowserCompat.MediaItem>
-             ) {
-                 super.onChildrenLoaded(parentId, children)
-                 val items = children.map {
-                     Song(
-                         it.mediaId!!,
-                         it.description.title.toString(),
-                         it.description.subtitle.toString(),
-                         it.description.mediaUri.toString(),
-                         it.description.iconUri.toString()
-                     )
-                 }
-                 _mediaItems.postValue(Resource.success(items))
+        _mediaItems.postValue(Resource.loading(null))
+        musicServiceConnection.subscribe(
+            MEDIA_ROOT_ID,
+            object : MediaBrowserCompat.SubscriptionCallback() {
+                override fun onChildrenLoaded(
+                    parentId: String,
+                    children: MutableList<MediaBrowserCompat.MediaItem>
+                ) {
+                    super.onChildrenLoaded(parentId, children)
+                    val items = children.map {
+                        Song(
+                            it.mediaId!!,
+                            it.description.title.toString(),
+                            it.description.subtitle.toString(),
+                            it.description.mediaUri.toString(),
+                            it.description.iconUri.toString()
+                        )
+                    }
+                    _mediaItems.postValue(Resource.success(items))
 
-             }
-         })
+                }
+            })
 
     }
 
-    fun skipToNextSong(){
+    fun skipToNextSong() {
         musicServiceConnection.transportControls.skipToNext()
     }
 
-    fun skipToPreviosSong(){
+    fun skipToPreviosSong() {
         musicServiceConnection.transportControls.skipToPrevious()
     }
 
-    fun seekTo(position:Long){
+    fun seekTo(position: Long) {
         musicServiceConnection.transportControls.seekTo(position)
     }
 
-    fun playOrToggleSong(mediaItem: Song, toggle: Boolean = false){
+    fun playOrToggleSong(mediaItem: Song, toggle: Boolean = false) {
         val isPrepared = playbackState.value?.isPrepared ?: false
         if (isPrepared && mediaItem.mediaId ==
-            currentPlayingSong.value?.getString(METADATA_KEY_MEDIA_ID)) {
-            playbackState.value?.let { playbackState->
-                when{
-                    playbackState.isPlaying -> if(toggle) musicServiceConnection.transportControls.pause()
+            currentPlayingSong.value?.getString(METADATA_KEY_MEDIA_ID)
+        ) {
+            playbackState.value?.let { playbackState ->
+                when {
+                    playbackState.isPlaying -> if (toggle) musicServiceConnection.transportControls.pause()
                     playbackState.isPlayEnablea -> musicServiceConnection.transportControls.play()
                     else -> Unit
                 }
             }
 
         } else {
-            musicServiceConnection.transportControls.playFromMediaId(mediaItem.mediaId,null)
+            musicServiceConnection.transportControls.playFromMediaId(mediaItem.mediaId, null)
         }
     }
 
     override fun onCleared() {
         super.onCleared()
-        musicServiceConnection.unsubscribe(MEDIA_ROOT_ID,object : MediaBrowserCompat.SubscriptionCallback() {})
+        musicServiceConnection.unsubscribe(MEDIA_ROOT_ID,
+            object : MediaBrowserCompat.SubscriptionCallback() {})
     }
 }

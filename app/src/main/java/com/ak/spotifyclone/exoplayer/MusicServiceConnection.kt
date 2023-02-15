@@ -17,19 +17,19 @@ import com.ak.spotifyclone.util.Constants.NETWORK_ERROR
 import com.ak.spotifyclone.util.Event
 import com.ak.spotifyclone.util.Resource
 
-class MusicServiceConnection (
-        context: Context
+class MusicServiceConnection(
+    context: Context
 ) {
-    private val  _isConnected = MutableLiveData<Event<Resource<Boolean>>>()
+    private val _isConnected = MutableLiveData<Event<Resource<Boolean>>>()
     val isConnected: LiveData<Event<Resource<Boolean>>> = _isConnected
 
-    private val  _networkError = MutableLiveData<Event<Resource<Boolean>>>()
+    private val _networkError = MutableLiveData<Event<Resource<Boolean>>>()
     val networkError: LiveData<Event<Resource<Boolean>>> = _networkError
 
-    private val  _playbackState = MutableLiveData<PlaybackStateCompat?>()
+    private val _playbackState = MutableLiveData<PlaybackStateCompat?>()
     val playbackState: LiveData<PlaybackStateCompat?> = _playbackState
 
-    private val  _curPlayingSong = MutableLiveData<MediaMetadataCompat?>()
+    private val _curPlayingSong = MutableLiveData<MediaMetadataCompat?>()
     val curPlayingSong: LiveData<MediaMetadataCompat?> = _curPlayingSong
 
     lateinit var mediaController: MediaControllerCompat
@@ -42,28 +42,28 @@ class MusicServiceConnection (
             context,
             MusicService::class.java,
 
-        ),
+            ),
         mediaBrowserConnectionCallback,
         null
     ).apply { connect() }
 
     val transportControls: MediaControllerCompat.TransportControls
-       get() = mediaController.transportControls
+        get() = mediaController.transportControls
 
-    fun subscribe(parentId:String,callback:MediaBrowserCompat.SubscriptionCallback){
+    fun subscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback) {
         mediaBrowser.subscribe(parentId, callback)
     }
 
-    fun unsubscribe(parentId:String,callback:MediaBrowserCompat.SubscriptionCallback){
+    fun unsubscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback) {
         mediaBrowser.unsubscribe(parentId, callback)
     }
 
     private inner class MediaBrowserConnectionCallback(
         private val context: Context
-    ) : MediaBrowserCompat.ConnectionCallback(){
+    ) : MediaBrowserCompat.ConnectionCallback() {
 
         override fun onConnected() {
-            mediaController = MediaControllerCompat(context,mediaBrowser.sessionToken).apply {
+            mediaController = MediaControllerCompat(context, mediaBrowser.sessionToken).apply {
                 registerCallback(MediaControllerCallback())
             }
             _isConnected.postValue(Event(Resource.success(true)))
@@ -71,22 +71,30 @@ class MusicServiceConnection (
         }
 
         override fun onConnectionSuspended() {
-            _isConnected.postValue(Event(Resource.error(
-                "bağlantı askıya alındı",false
-            )))
+            _isConnected.postValue(
+                Event(
+                    Resource.error(
+                        "bağlantı askıya alındı", false
+                    )
+                )
+            )
 
         }
 
         override fun onConnectionFailed() {
-            _isConnected.postValue(Event(Resource.error(
-                "medya tarayıcısına bağlanılamadı",false
-            )))
+            _isConnected.postValue(
+                Event(
+                    Resource.error(
+                        "medya tarayıcısına bağlanılamadı", false
+                    )
+                )
+            )
 
         }
 
     }
 
-    private inner class MediaControllerCallback: MediaControllerCompat.Callback(){
+    private inner class MediaControllerCallback : MediaControllerCompat.Callback() {
 
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
             _playbackState.postValue(state)
@@ -98,7 +106,7 @@ class MusicServiceConnection (
 
         override fun onSessionEvent(event: String?, extras: Bundle?) {
             super.onSessionEvent(event, extras)
-            when(event) {
+            when (event) {
                 NETWORK_ERROR -> _networkError.postValue(
                     Event(
                         Resource.error(
@@ -111,7 +119,7 @@ class MusicServiceConnection (
         }
 
         override fun onSessionDestroyed() {
-            mediaBrowserConnectionCallback.onConnectionSuspended()  
+            mediaBrowserConnectionCallback.onConnectionSuspended()
         }
     }
 }

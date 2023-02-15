@@ -7,12 +7,12 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector.PlaybackPreparer
 
 class MusicPlayerEventListener(
-    private val  musicService: MusicService
+    private val musicService: MusicService
 ) : Player.Listener {
     @Deprecated("Deprecated in Java")
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
         super.onPlayerStateChanged(playWhenReady, playbackState)
-        if (playbackState == Player.STATE_READY && !playWhenReady){
+        if (playbackState == Player.STATE_READY && !playWhenReady) {
             musicService.stopForeground(false)
         }
     }

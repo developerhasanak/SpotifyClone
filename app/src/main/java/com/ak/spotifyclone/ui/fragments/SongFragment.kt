@@ -30,7 +30,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class SongFragment : Fragment() {
 
-    private lateinit var _binding : FragmentSongBinding
+    private lateinit var _binding: FragmentSongBinding
     private val binding get() = _binding
 
     @Inject
@@ -38,11 +38,11 @@ class SongFragment : Fragment() {
 
 
     private lateinit var mainViewModel: MainViewModel
-    private  val songViewModel: SongViewModel by viewModels()
+    private val songViewModel: SongViewModel by viewModels()
 
-    private var currentPlayingSong:Song?= null
+    private var currentPlayingSong: Song? = null
 
-    private var playbackState:PlaybackStateCompat?=null
+    private var playbackState: PlaybackStateCompat? = null
 
     private var shouldUpdateSeekbar = true
 
@@ -51,7 +51,7 @@ class SongFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentSongBinding.inflate(inflater,container,false)
+        _binding = FragmentSongBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -64,7 +64,7 @@ class SongFragment : Fragment() {
 
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if(fromUser) {
+                if (fromUser) {
                     setCurPlayerTimeToTextView(progress.toLong())
                 }
             }
@@ -82,43 +82,43 @@ class SongFragment : Fragment() {
         })
     }
 
-    private fun updateTitleAndSongImage(song: Song){
-     val title = "${song.title} ~ ${song.subtitle}"
+    private fun updateTitleAndSongImage(song: Song) {
+        val title = "${song.title} ~ ${song.subtitle}"
         binding.tvSongName.text = title
         glide.load(song.imageUrl).into(binding.ivSongImage)
     }
 
-    private fun subscribeToObservers(){
-        mainViewModel.mediaItems.observe(viewLifecycleOwner){
+    private fun subscribeToObservers() {
+        mainViewModel.mediaItems.observe(viewLifecycleOwner) {
             it?.let { result ->
-                when(result.status){
-                   SUCCESS -> {
-                       result.data?.let {songs->
-                           if (currentPlayingSong == null && songs.isNotEmpty()){
+                when (result.status) {
+                    SUCCESS -> {
+                        result.data?.let { songs ->
+                            if (currentPlayingSong == null && songs.isNotEmpty()) {
                                 currentPlayingSong = songs[0]
                                 updateTitleAndSongImage(songs[0])
-                           }
-                       }
-                   }
-                   else -> Unit
+                            }
+                        }
+                    }
+                    else -> Unit
                 }
             }
         }
-        mainViewModel.currentPlayingSong.observe(viewLifecycleOwner){
-            if(it == null) return@observe
+        mainViewModel.currentPlayingSong.observe(viewLifecycleOwner) {
+            if (it == null) return@observe
             currentPlayingSong = it.toSong()
             updateTitleAndSongImage(currentPlayingSong!!)
         }
         mainViewModel.playbackState.observe(viewLifecycleOwner) {
-             playbackState = it
-             binding.ivPlayPauseDetail.setImageResource(
-                 if (playbackState?.isPlaying == true) R.drawable.ic_pause else R.drawable.ic_play
-             )
+            playbackState = it
+            binding.ivPlayPauseDetail.setImageResource(
+                if (playbackState?.isPlaying == true) R.drawable.ic_pause else R.drawable.ic_play
+            )
 
-             binding.seekBar.progress = it?.position?.toInt() ?: 0
+            binding.seekBar.progress = it?.position?.toInt() ?: 0
         }
         songViewModel.currentPlayerPosition.observe(viewLifecycleOwner) {
-            if (shouldUpdateSeekbar){
+            if (shouldUpdateSeekbar) {
                 binding.seekBar.progress = it.toInt()
                 setCurPlayerTimeToTextView(it)
             }
@@ -137,17 +137,17 @@ class SongFragment : Fragment() {
     }
 
     fun pause() {
-         currentPlayingSong?.let {
-             mainViewModel.playOrToggleSong(it,true)
-         }
+        currentPlayingSong?.let {
+            mainViewModel.playOrToggleSong(it, true)
+        }
     }
 
-     fun toNextSong() {
-         mainViewModel.skipToNextSong()
-     }
+    fun toNextSong() {
+        mainViewModel.skipToNextSong()
+    }
 
-     fun toPreviousSong() {
-         mainViewModel.skipToPreviosSong()
+    fun toPreviousSong() {
+        mainViewModel.skipToPreviosSong()
     }
 
 }

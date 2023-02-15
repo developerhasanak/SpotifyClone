@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 class FirebaseMusicSource @Inject constructor(
     private val musicDatabase: MusicDatabase
-){
+) {
 
     var songs = emptyList<MediaMetadataCompat>()
 
@@ -67,7 +67,7 @@ class FirebaseMusicSource @Inject constructor(
 
     private var state: State = State.STATE_CREATED
         set(value) {
-            if(value == State.STATE_INITIALIZED || value == State.STATE_ERROR) {
+            if (value == State.STATE_INITIALIZED || value == State.STATE_ERROR) {
                 synchronized(onReadyListeners) {
                     field = value
                     onReadyListeners.forEach { listener ->
@@ -80,7 +80,7 @@ class FirebaseMusicSource @Inject constructor(
         }
 
     fun whenReady(action: (Boolean) -> Unit): Boolean {
-        if(state == State.STATE_CREATED || state == State.STATE_INITIALIZING) {
+        if (state == State.STATE_CREATED || state == State.STATE_INITIALIZING) {
             onReadyListeners += action
             return false
         } else {

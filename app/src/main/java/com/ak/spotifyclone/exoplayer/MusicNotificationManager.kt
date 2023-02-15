@@ -27,8 +27,9 @@ class MusicNotificationManager(
 
     init {
         val mediaController = MediaControllerCompat(context, sessionToken)
-        val builder = PlayerNotificationManager.Builder(context,NOTIFICATION_ID,NOTIFICATION_CHANEL_ID)
-        with(builder){
+        val builder =
+            PlayerNotificationManager.Builder(context, NOTIFICATION_ID, NOTIFICATION_CHANEL_ID)
+        with(builder) {
             setMediaDescriptionAdapter(DescriptionAdapter(mediaController))
             setNotificationListener(notificationListener)
             setChannelNameResourceId(R.string.notification_channel)
