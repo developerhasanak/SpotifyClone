@@ -9,9 +9,9 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/common" />
+            <option value="/mnt/81ec5b57-0d46-4e20-ad46-2caeffc3ba64/aa_referans_projelerim/spotifyClone" />
+            <option value="/mnt/81ec5b57-0d46-4e20-ad46-2caeffc3ba64/aa_referans_projelerim/spotifyClone/app" />
+            <option value="/mnt/81ec5b57-0d46-4e20-ad46-2caeffc3ba64/aa_referans_projelerim/spotifyClone/common" />
           </set>
         </option>
       </GradleProjectSettings>
